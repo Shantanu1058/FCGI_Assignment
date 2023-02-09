@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "__fpos_t.h": "c",
+        "types.h": "c"
+    }
+}
