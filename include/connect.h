@@ -2,17 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <mysql/mysql.h>
+#include <include/configuration.h>
+
+
+
+
 static char *host = "localhost";
-static char *user = "root";
-static char *pass = "Godfather_1058";
 static char *db   = "sample";
 static char *sk = NULL;
 unsigned int port = 3306;
 unsigned int flags = 0;
-
 FILE *filePointer;
 char *ans;
-void insert_db( char *username,char *link){
+
+
+void insert_db( char *user,char* pass,char *username,char *link){
     filePointer=fopen("/etc/nginx/error.log","w");
     MYSQL *con;
     con = mysql_init(NULL);
@@ -36,7 +40,7 @@ void insert_db( char *username,char *link){
     fclose(filePointer);
 }
 
-char *search_db(char *username){
+char *search_db(char*user,char* pass,char *username){
     filePointer=fopen("/etc/nginx/error.log","w");
     MYSQL *con;
     con = mysql_init(NULL);

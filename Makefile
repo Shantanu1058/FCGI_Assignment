@@ -7,7 +7,7 @@ INC_DIR=-I.
 #Variables
 CC=gcc
 GCC_FLAGS= -Wall -Werror -Wextra $(INC_DIR)
-LFLAGS= -lfcgi -ggdb -O3 -lmemcached -lpthread
+LFLAGS= -lfcgi -ggdb -O3 -lmemcached -lpthread -lconfig
 MYSQL_CONFIG= $$(mysql_config --cflags --libs) 
 TARGET=fcgi_app
 OBJECTS = $(patsubst $(SRC_DIR)/phase4.c,$(OBJ_DIR)/phase4.o, $(wildcard $(SRC_DIR)/phase4.c))
