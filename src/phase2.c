@@ -3,9 +3,11 @@
 #include <string.h>
 #include <include/separator.h>
 #include <include/connect.h>
-
+#include <include/configuration.h>
+config_t cfg;
 int main(){
     FCGX_Init();
+    cfg=configuration_init("config.cfg");
     FCGX_Request Request;
 	FCGX_InitRequest(&Request, 0, 0);
     while (FCGX_Accept_r(&Request) >= 0)
@@ -24,7 +26,7 @@ int main(){
         else{
             
             if(strlen(token[2])==0){
-                char *res=search_db(token[0]);
+                char *res=search_db(getDBUsername(cfg),getDBPassword(cfg),token[0]);
 
                 if(res==NULL){
                     FCGX_FPrintF(
@@ -41,7 +43,7 @@ int main(){
                 free(res);
             }
             else{
-                insert_db(token[0],token[2]);
+                insert_db(getDBUsername(cfg),getDBPassword(cfg),token[0],token[2]);
                 FCGX_FPrintF(Request.out, "HTTP/1.1 302\r\nLocation: %s\r\n\r\n", token[2]);
                 free(token);
             }
