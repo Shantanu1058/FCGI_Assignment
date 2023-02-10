@@ -7,6 +7,7 @@
 #include <include/cookie.h>
 
 pthread_mutex_t lock;
+config_t cfg;
 void *requestHandler(void *iid)
 {
 	int *id = (int *)iid;
@@ -52,7 +53,7 @@ void *requestHandler(void *iid)
 				pthread_mutex_lock(&lock);
 
 				char *res_mem = search_mem(token[0]);
-				char *res_db = search_db(token[0]);
+				char *res_db = search_db(getDBUsername(cfg),getDBPassword(cfg),token[0]);
 
 				pthread_mutex_unlock(&lock);
 
@@ -119,10 +120,10 @@ void *requestHandler(void *iid)
 
 					pthread_mutex_lock(&lock);
 
-					insert_db(token[0], token[2]);
+					insert_db(getDBUsername(cfg),getDBPassword(cfg),token[0], token[2]);
 					insert_mem(token[0], token[2]);
 
-					set_cookie(&Request,token[0],token[2],60*60*24);
+					set_cookie(&Request,token[0],token[2],getCookiesTimeout(cfg));
 
 					FCGX_FPrintF(Request.out, "HTTP/1.1 302\r\nLocation: %s\r\n\r\n", token[2]);
 
@@ -139,9 +140,11 @@ void *requestHandler(void *iid)
 
 int main()
 {
-	pthread_t th[8];
+	cfg=configuration_init("config.cfg");
+	int numberOfThreads=getNumberOfThreads(cfg);
+	pthread_t th[numberOfThreads];
 	pthread_mutex_init(&lock, NULL);
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < numberOfThreads; ++i)
 	{
 		pthread_create(&th[i], NULL, requestHandler, (void *)th);
 		pthread_join(th[i], NULL);
